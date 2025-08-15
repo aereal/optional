@@ -65,8 +65,9 @@ linters:
       default-signifies-exhaustive: true
     exhaustruct:
       include:
-        - '.*'
-      exclude: []
+        - '.+'
+      exclude:
+        - '.*optional[.]Option$'
     govet:
       disable-all: true
       enable:
