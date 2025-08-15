@@ -56,11 +56,7 @@ func (o *Option[T]) Scan(src any) error {
 	if err := n.Scan(src); err != nil {
 		return err
 	}
-	if n.Valid {
-		*o = Some(n.V)
-	} else {
-		*o = None[T]()
-	}
+	*o = FromExistenceCheck(n.V, n.Valid)
 	return nil
 }
 
@@ -99,6 +95,16 @@ func FromResult[T any](v T, err error) Option[T] {
 		return None[T]()
 	}
 	return Some(v)
+}
+
+// FromExistenceCheck returns an existing value if exists == true, otherwrise returns a none.
+//
+// The existence check means (T, bool) tuple values, it is inspired by map type's special index expression.
+func FromExistenceCheck[T any](v T, exists bool) Option[T] {
+	if exists {
+		return Some(v)
+	}
+	return None[T]()
 }
 
 // Some returns an existing value of type T.
