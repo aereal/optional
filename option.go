@@ -2,6 +2,8 @@ package optional
 
 import (
 	"bytes"
+	"database/sql"
+	"database/sql/driver"
 	"encoding/json"
 	"iter"
 )
@@ -15,6 +17,8 @@ type Option[T any] struct {
 var (
 	_ json.Marshaler   = Option[any]{}
 	_ json.Unmarshaler = (*Option[any])(nil)
+	_ driver.Valuer    = Option[any]{}
+	_ sql.Scanner      = (*Option[any])(nil)
 )
 
 var null = []byte(`null`)
@@ -37,6 +41,26 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	*o = Some(v)
+	return nil
+}
+
+func (o Option[T]) Value() (driver.Value, error) {
+	if !o.present {
+		return nil, nil
+	}
+	return driver.DefaultParameterConverter.ConvertValue(o.v)
+}
+
+func (o *Option[T]) Scan(src any) error {
+	var n sql.Null[T]
+	if err := n.Scan(src); err != nil {
+		return err
+	}
+	if n.Valid {
+		*o = Some(n.V)
+	} else {
+		*o = None[T]()
+	}
 	return nil
 }
 
