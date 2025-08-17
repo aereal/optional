@@ -34,7 +34,6 @@ linters:
     - errname
     - exhaustive
     - exhaustruct
-    - forbidigo
     - forcetypeassert
     - gocheckcompilerdirectives
     - gochecksumtype
