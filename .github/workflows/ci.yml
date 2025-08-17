@@ -27,6 +27,7 @@ jobs:
         with:
           cache: true
           go-version: stable
+      - run: go work init ./ ./sqltest
       - run: go mod download
       - name: test
         run: |
@@ -57,6 +58,7 @@ jobs:
         with:
           cache: true
           go-version: stable
+      - run: go work init ./ ./sqltest
       - run: go mod download
       - uses: aquaproj/aqua-installer@d1fe50798dbadd4eb5b98957290ca175f6b4870f # v4.0.2
         with:

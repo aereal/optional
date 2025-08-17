@@ -34,7 +34,6 @@ linters:
     - errname
     - exhaustive
     - exhaustruct
-    - forbidigo
     - forcetypeassert
     - gocheckcompilerdirectives
     - gochecksumtype
@@ -65,8 +64,9 @@ linters:
       default-signifies-exhaustive: true
     exhaustruct:
       include:
-        - '.*'
-      exclude: []
+        - '.+'
+      exclude:
+        - '.*optional[.]Option$'
     govet:
       disable-all: true
       enable:
@@ -104,3 +104,9 @@ linters:
         - unusedresult
         - unusedwrite
         - waitgroup
+  exclusions:
+    rules:
+      - path: '_test[.]go$'
+        linters:
+          - errcheck
+        text: 'is not checked'
