@@ -107,6 +107,16 @@ func FromExistenceCheck[T any](v T, exists bool) Option[T] {
 	return None[T]()
 }
 
+// FromIterator returns an Option with the first value yielded from the iterator.
+//
+// If the iterator yields no values, returns None.
+func FromIterator[T any](i iter.Seq[T]) Option[T] {
+	for v := range i {
+		return Some(v)
+	}
+	return None[T]()
+}
+
 // Some returns an existing value of type T.
 func Some[T any](v T) Option[T] {
 	return Option[T]{v: v, present: true}
