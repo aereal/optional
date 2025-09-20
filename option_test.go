@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"iter"
 	"slices"
 	"testing"
 
@@ -16,6 +17,25 @@ var (
 	none    = optional.FromPtr[int](nil)
 	errOops = errors.New("oops")
 )
+
+func TestFromIterator(t *testing.T) {
+	t.Parallel()
+
+	empty := []int{}
+	if got := optional.FromIterator(slices.Values(empty)); !optional.IsNone(got) {
+		t.Errorf("expected None from empty but got: %#v", got)
+	}
+
+	var numIterator iter.Seq[int] = func(yield func(int) bool) {
+		if !yield(1) {
+			return
+		}
+		t.Fatal("the iterator is called twice")
+	}
+	if got := optional.FromIterator(numIterator); !optional.IsSome(got) || !optional.Equal(got, optional.Some(1)) {
+		t.Errorf("expected Some(1) from {1,2,3} but got: %#v", got)
+	}
+}
 
 func TestFromPtr(t *testing.T) {
 	t.Parallel()
